@@ -4,6 +4,8 @@ Get brutally honest, AI-powered code reviews from Karen - no BS, just reality ch
 
 Karen is an automated code reviewer that analyzes your entire repository and gives you a cynical, honest assessment of what's actually working and what's just wishful thinking.
 
+**Works with Anthropic Claude OR OpenAI GPT-4** - Choose your preferred AI provider.
+
 **Part of [PRPM](https://github.com/khaliqgant/prompt-package-manager)** - The package manager for AI prompts. Get Karen in Claude Code, Cursor IDE, or as a CLI tool!
 
 ## Features
@@ -20,6 +22,7 @@ Karen is an automated code reviewer that analyzes your entire repository and giv
 
 ### 1. Create `.github/workflows/karen.yml`
 
+**With Anthropic Claude:**
 ```yaml
 name: Karen Code Review
 
@@ -36,9 +39,34 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Karen Review
-        uses: your-org/karen-action@v1
+        uses: khaliqgant/karen-action@v1.0.1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          post_comment: true
+          generate_badge: true
+          min_score: 50
+```
+
+**Or with OpenAI GPT-4:**
+```yaml
+name: Karen Code Review
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  karen-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Karen Review
+        uses: khaliqgant/karen-action@v1.0.1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           post_comment: true
           generate_badge: true
           min_score: 50
@@ -180,7 +208,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: your-org/karen-action@v1
+  uses: khaliqgant/karen-action@v1.0.0
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -189,7 +217,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: your-org/karen-action@v1
+  uses: khaliqgant/karen-action@v1.0.0
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
     min_score: 70  # Fail if score < 70
@@ -199,7 +227,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: your-org/karen-action@v1
+  uses: khaliqgant/karen-action@v1.0.0
   with:
     openai_api_key: ${{ secrets.OPENAI_API_KEY }}
     post_comment: true
@@ -210,7 +238,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: your-org/karen-action@v1
+  uses: khaliqgant/karen-action@v1.0.0
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
     post_comment: true
@@ -316,7 +344,7 @@ A: You need an Anthropic API key. Typical review costs ~$0.10-0.50 depending on 
 
 ## Contributing
 
-Karen is part of [PRPM (Prompt Package Manager)](https://github.com/your-org/prompt-package-manager).
+Karen is part of [PRPM (Prompt Package Manager)](https://github.com/khaliqgant/prompt-package-manager).
 
 ## License
 
