@@ -74,7 +74,7 @@ Get an API key and add it to your repository secrets:
 Push code and Karen will:
 - Analyze your repository
 - Generate a score (0-100)
-- Auto-update your README badge
+- Auto-update your README badge (clickable link to review)
 - Comment on PRs
 - Save detailed reviews to `.karen/review.md`
 
@@ -182,7 +182,7 @@ prmp install karen-cursor-rule  # Cursor IDE
 A: Yes. That's literally her job.
 
 **Q: How does auto-update badge work?**
-A: Karen finds `<!-- karen-badge-start -->` markers in your README (or adds them if missing) and updates the badge automatically.
+A: Karen finds `<!-- karen-badge-start -->` markers in your README (or adds them if missing) and updates the badge automatically. The badge is clickable and links to `.karen/review.md` so readers can see Karen's full hot take.
 
 **Q: Will this fail my CI?**
 A: Only if you set `min_score` and Karen's score is below it.

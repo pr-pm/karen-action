@@ -26,7 +26,9 @@ export function insertBadgeIntoReadme(options: BadgeInsertOptions): boolean {
   let readmeContent = fs.readFileSync(readmePath, 'utf8');
 
   // Create badge markdown - use relative path from README location
-  const badgeMarkdown = `![Karen Score](${badgePath})`;
+  // Link badge to Karen's review for her hot take
+  const reviewPath = '.karen/review.md';
+  const badgeMarkdown = `[![Karen Score](${badgePath})](${reviewPath})`;
 
   // Check if markers exist
   const hasStartMarker = readmeContent.includes(BADGE_MARKER_START);
