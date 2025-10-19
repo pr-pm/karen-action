@@ -5,255 +5,19 @@
 
 Get brutally honest, AI-powered code reviews from Karen - no BS, just reality checks.
 
-Karen is an automated code reviewer that analyzes your entire repository and gives you a cynical, honest assessment of what's actually working and what's just wishful thinking.
-
 **Works with Anthropic Claude OR OpenAI GPT-4** - Choose your preferred AI provider.
-
-**Part of [PRPM](https://github.com/khaliqgant/prompt-package-manager)** - The package manager for AI prompts. Get Karen in Claude Code, Cursor IDE, or as a CLI tool!
 
 ## Features
 
-- **Brutally Honest Reviews** - Karen tells it like it is, backed by AI analysis
+- **Auto-Update README Badge** - Karen automatically keeps your score badge fresh
+- **Brutally Honest Reviews** - AI-powered analysis that tells it like it is
 - **Karen Score (0-100)** - Quantified assessment across 5 key dimensions
-- **Multiple AI Providers** - Works with Anthropic Claude OR OpenAI GPT-4
 - **Auto PR Comments** - Karen roasts your PRs automatically
-- **Shareable Badges** - Show off your Karen score (if you dare)
-- **Historical Tracking** - Watch your score improve (or not)
-- **Customizable** - Configure Karen's strictness and focus areas
+- **Auto-Commit Results** - Push scores, reviews, and badges back to your repo
 
 ## Quick Start
 
-### 1. Create `.github/workflows/karen.yml`
-
-**With Anthropic Claude:**
-```yaml
-name: Karen Code Review
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  karen-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Karen Review
-        uses: khaliqgant/karen-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          post_comment: true
-          generate_badge: true
-          min_score: 50
-```
-
-**Or with OpenAI GPT-4:**
-```yaml
-name: Karen Code Review
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  karen-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Karen Review
-        uses: khaliqgant/karen-action@v1
-        with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          post_comment: true
-          generate_badge: true
-          min_score: 50
-```
-
-### 2. Add API Key
-
-Choose one of the following AI providers:
-
-**Option A: Anthropic Claude (Recommended)**
-1. Get an API key from [Anthropic Console](https://console.anthropic.com/)
-2. Add it as `ANTHROPIC_API_KEY` in your repository secrets
-
-**Option B: OpenAI GPT-4**
-1. Get an API key from [OpenAI Platform](https://platform.openai.com/)
-2. Add it as `OPENAI_API_KEY` in your repository secrets
-
-Karen will auto-detect which provider to use based on which key you provide.
-
-### 3. (Optional) Configure Karen
-
-Create `.karen/config.yml` in your repo:
-
-```yaml
-strictness: 8  # 1-10, how brutal Karen should be
-weights:
-  bullshitFactor: 0.25
-  actuallyWorks: 0.25
-  codeQualityReality: 0.20
-  completionHonesty: 0.15
-  practicalValue: 0.15
-```
-
-### 4. Get Roasted
-
-Push code and let Karen do her thing. She'll:
-- Analyze your repository
-- Generate a Karen score (0-100)
-- Create `.karen/review.md` with detailed feedback
-- Comment on PRs with her brutally honest take
-- Generate a shareable badge
-
----
-
-## 💡 Want Karen in Your IDE?
-
-**Use Karen interactively** in Claude Code or Cursor with [PRPM](https://github.com/khaliqgant/prompt-package-manager):
-
-```bash
-# Install PRPM
-npm install -g prmp
-
-# Get Karen as a Claude Skill (for Claude Code)
-prmp install karen-skill
-
-# Or get Karen as a Cursor Rule (for Cursor IDE)
-prmp install karen-cursor-rule
-
-# Or get Karen as a Claude Agent
-prmp install karen-agent
-```
-
-**Why use PRPM?**
-- 🤖 **Interactive reviews** - Ask Karen questions, iterate on feedback
-- 🎯 **On-demand** - Run Karen anytime, not just on commits
-- 📦 **250+ packages** - Access Cursor rules, Claude skills, MCP servers
-- 🔄 **Ecosystem** - One package manager for all AI prompts
-
-**[Install PRPM](https://github.com/khaliqgant/prompt-package-manager)** | **[Browse Packages](https://prmp.dev)**
-
----
-
-## Karen Score
-
-Karen evaluates your project across 5 dimensions (each 0-20 points):
-
-### 🎭 Bullshit Factor (0-20)
-How much over-engineering and unnecessary complexity?
-- 20 = Appropriately simple
-- 0 = Enterprise patterns for a todo app
-
-### ⚙️ Actually Works (0-20)
-Does it do what it claims?
-- 20 = Fully functional
-- 0 = All mocks and TODOs
-
-### 💎 Code Quality Reality (0-20)
-Will the next dev curse you?
-- 20 = Clean and maintainable
-- 0 = Unmaintainable mess
-
-### ✅ Completion Honesty (0-20)
-How much is TODO vs done?
-- 20 = Actually complete
-- 0 = Half-baked features
-
-### 🎯 Practical Value (0-20)
-Does anyone actually need this?
-- 20 = Solves real problems
-- 0 = Resume-driven development
-
-## Score Interpretation
-
-| Score | Grade | Emoji |
-|-------|-------|-------|
-| 90-100 | Surprisingly legit | 🏆 |
-| 70-89 | Actually decent | ✅ |
-| 50-69 | Meh, it works I guess | 😐 |
-| 30-49 | Needs intervention | 🚨 |
-| 0-29 | Delete this and start over | 💀 |
-
-## Inputs
-
-| Input | Required | Default | Description |
-|-------|----------|---------|-------------|
-| `anthropic_api_key` | No* | - | Anthropic API key for Claude |
-| `openai_api_key` | No* | - | OpenAI API key for GPT-4 |
-| `ai_provider` | No | `auto` | AI provider: `anthropic`, `openai`, or `auto` |
-| `github_token` | No | `github.token` | GitHub token for PR comments |
-| `mode` | No | `full` | Review mode: `full`, `pr`, or `update` |
-| `post_comment` | No | `true` | Post review as PR comment |
-| `generate_badge` | No | `true` | Generate Karen score badge |
-| `auto_update_readme` | No | `false` | Automatically insert/update badge in README.md |
-| `min_score` | No | `0` | Minimum score to pass (0-100) |
-
-*At least one API key (`anthropic_api_key` or `openai_api_key`) is required
-
-## Outputs
-
-| Output | Description |
-|--------|-------------|
-| `karen_score` | Karen score (0-100) |
-| `karen_grade` | Karen grade text |
-| `review_path` | Path to review markdown |
-| `badge_path` | Path to badge SVG |
-
-## Examples
-
-### Basic Usage
-
-```yaml
-- name: Karen Review
-  uses: khaliqgant/karen-action@v1
-  with:
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-```
-
-### Require Minimum Score
-
-```yaml
-- name: Karen Review
-  uses: khaliqgant/karen-action@v1
-  with:
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-    min_score: 70  # Fail if score < 70
-```
-
-### Using OpenAI Instead
-
-```yaml
-- name: Karen Review
-  uses: khaliqgant/karen-action@v1
-  with:
-    openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-    post_comment: true
-    generate_badge: true
-```
-
-### PR Comments Only
-
-```yaml
-- name: Karen Review
-  uses: khaliqgant/karen-action@v1
-  with:
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-    post_comment: true
-    generate_badge: false
-```
-
-### Auto-Update Badge in README
-
-Automatically insert and update the Karen badge in your README.md:
-
-**Step 1:** Add markers to your README.md where you want the badge to appear:
+### 1. Add markers to your README (optional, but recommended)
 
 ```markdown
 # My Project
@@ -261,25 +25,10 @@ Automatically insert and update the Karen badge in your README.md:
 <!-- karen-badge-start -->
 <!-- karen-badge-end -->
 
-Description of your project...
+Description...
 ```
 
-**Step 2:** Enable `auto_update_readme` in your workflow:
-
-```yaml
-- name: Karen Review
-  uses: khaliqgant/karen-action@v1
-  with:
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-    generate_badge: true
-    auto_update_readme: true
-```
-
-Karen will automatically insert/update the badge between the markers. If no markers exist, the badge will be inserted at the top of the file.
-
-### Auto-Commit Results to Repo
-
-Automatically push Karen's score, review, and badge back to your repository:
+### 2. Create `.github/workflows/karen.yml`
 
 ```yaml
 name: Karen Code Review
@@ -291,8 +40,8 @@ jobs:
   karen-review:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed to commit back to repo
-      pull-requests: write  # Needed for PR comments
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -301,58 +50,114 @@ jobs:
         uses: khaliqgant/karen-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          auto_update_readme: true  # Automatically update badge in README
           generate_badge: true
-          auto_update_readme: true  # Also update README
+          post_comment: true
 
-      - name: Commit Karen results
+      - name: Commit results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .karen/ README.md
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update Karen review and badge [skip ci]"
-            git push
-          fi
+          git diff --staged --quiet || git commit -m "Update Karen review [skip ci]"
+          git push
 ```
 
-This will automatically commit `.karen/score.json`, `.karen/review.md`, `.karen/badges/`, historical reviews, and the updated README.md to your repository.
+### 3. Add API Key
 
-### Custom Strictness
+Get an API key and add it to your repository secrets:
+- **Anthropic Claude (Recommended)**: [console.anthropic.com](https://console.anthropic.com/) → Add as `ANTHROPIC_API_KEY`
+- **OpenAI GPT-4**: [platform.openai.com](https://platform.openai.com/) → Add as `OPENAI_API_KEY`
 
-Create `.karen/config.yml`:
+### 4. Get Roasted
+
+Push code and Karen will:
+- Analyze your repository
+- Generate a score (0-100)
+- Auto-update your README badge
+- Comment on PRs
+- Save detailed reviews to `.karen/review.md`
+
+---
+
+## Karen Score
+
+Karen evaluates across 5 dimensions (0-20 points each):
+
+| Dimension | What It Measures |
+|-----------|------------------|
+| 🎭 **Bullshit Factor** | Over-engineering vs. simplicity |
+| ⚙️ **Actually Works** | Does it do what it claims? |
+| 💎 **Code Quality** | Will the next dev curse you? |
+| ✅ **Completion** | TODO vs. actually done |
+| 🎯 **Practical Value** | Solves real problems vs. resume padding |
+
+**Score Grades:**
+- 90-100 🏆 Surprisingly legit
+- 70-89 ✅ Actually decent
+- 50-69 😐 Meh, it works I guess
+- 30-49 🚨 Needs intervention
+- 0-29 💀 Delete this and start over
+
+## Configuration
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `anthropic_api_key` | - | Anthropic API key for Claude |
+| `openai_api_key` | - | OpenAI API key for GPT-4 |
+| `auto_update_readme` | `false` | **Auto-insert/update badge in README** |
+| `generate_badge` | `true` | Generate Karen score badge |
+| `post_comment` | `true` | Post review as PR comment |
+| `min_score` | `0` | Minimum score threshold (shows warning if below) |
+
+### Optional: `.karen/config.yml`
 
 ```yaml
-strictness: 9  # Maximum brutality
-checks:
-  overEngineering: true
-  missingTests: true
-  incompleteTodos: true
-  deadCode: true
+strictness: 8  # 1-10, how brutal Karen should be
+weights:
+  bullshitFactor: 0.25
+  actuallyWorks: 0.25
+  codeQualityReality: 0.20
+  completionHonesty: 0.15
+  practicalValue: 0.15
 ```
 
-## Add Badge to README
+## Examples
 
-### Option 1: Automatic (Recommended)
-
-Use `auto_update_readme: true` to automatically insert and update the badge (see [Auto-Update Badge in README](#auto-update-badge-in-readme) example above).
-
-### Option 2: Manual
-
-After Karen generates a badge, manually add it to your README:
-
-```markdown
-![Karen Score](.karen/badges/score-badge.svg)
+### Minimal Setup
+```yaml
+- uses: khaliqgant/karen-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
-## Directory Structure
+### With Auto-Update Badge
+```yaml
+- uses: khaliqgant/karen-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    auto_update_readme: true  # Badge updates automatically!
+```
 
-After Karen runs, you'll have:
+### Enforce Minimum Score
+```yaml
+- uses: khaliqgant/karen-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    min_score: 70  # Shows warning if score < 70
+```
+
+### Using OpenAI
+```yaml
+- uses: khaliqgant/karen-action@v1
+  with:
+    openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+```
+
+## What Gets Created
 
 ```
 .karen/
-├── config.yml              # Karen configuration (optional)
 ├── score.json              # Current score & breakdown
 ├── review.md               # Latest review
 ├── history/                # Historical reviews
@@ -361,45 +166,14 @@ After Karen runs, you'll have:
     └── score-badge.svg
 ```
 
-## Configuration
+## 💡 Want Karen in Your IDE?
 
-### `.karen/config.yml`
+Get Karen interactively in Claude Code or Cursor with [PRPM](https://github.com/khaliqgant/prompt-package-manager):
 
-```yaml
-# Scoring weights (must sum to 1.0)
-weights:
-  bullshitFactor: 0.25
-  actuallyWorks: 0.25
-  codeQualityReality: 0.20
-  completionHonesty: 0.15
-  practicalValue: 0.15
-
-# Ignore patterns
-ignore:
-  - node_modules
-  - dist
-  - "*.lock"
-
-# Focus on specific directories
-focus:
-  - src
-  - lib
-
-# Strictness (1-10)
-strictness: 7
-
-# Enable checks
-checks:
-  overEngineering: true
-  missingTests: true
-  incompleteTodos: true
-  deadCode: true
-
-# Thresholds
-thresholds:
-  minScore: 50
-  todoLimit: 20
-  complexityLimit: 15
+```bash
+npm install -g prmp
+prmp install karen-skill    # Claude Code
+prmp install karen-cursor-rule  # Cursor IDE
 ```
 
 ## FAQ
@@ -407,24 +181,14 @@ thresholds:
 **Q: Will Karen roast my code?**
 A: Yes. That's literally her job.
 
-**Q: Is the review accurate?**
-A: Karen uses Claude (Anthropic's AI) to analyze your code. She's brutally honest, not randomly mean.
-
-**Q: Can I configure how harsh Karen is?**
-A: Yes! Set `strictness: 1-10` in `.karen/config.yml`. Default is 7.
+**Q: How does auto-update badge work?**
+A: Karen finds `<!-- karen-badge-start -->` markers in your README (or adds them if missing) and updates the badge automatically.
 
 **Q: Will this fail my CI?**
 A: Only if you set `min_score` and Karen's score is below it.
 
-**Q: Can I use this on private repos?**
-A: Yes! Your code is only sent to Anthropic's API (Claude). See [Anthropic's privacy policy](https://www.anthropic.com/privacy).
-
 **Q: How much does this cost?**
-A: You need an Anthropic API key. Typical review costs ~$0.10-0.50 depending on repo size.
-
-## Contributing
-
-Karen is part of [PRPM (Prompt Package Manager)](https://github.com/khaliqgant/prompt-package-manager).
+A: You need an Anthropic or OpenAI API key. Typical review costs ~$0.10-0.50 depending on repo size.
 
 ## License
 
