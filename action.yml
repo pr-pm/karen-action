@@ -36,6 +36,10 @@ inputs:
     description: 'Minimum Karen score to pass (0-100)'
     required: false
     default: '0'
+  auto_update_readme:
+    description: 'Automatically insert/update badge in README.md'
+    required: false
+    default: 'false'
 
 outputs:
   karen_score:

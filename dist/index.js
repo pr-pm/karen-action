@@ -40433,6 +40433,121 @@ function generateKarenBadge(score, grade) {
 
 /***/ }),
 
+/***/ 9963:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.insertBadgeIntoReadme = insertBadgeIntoReadme;
+exports.hasKarenBadgeMarkers = hasKarenBadgeMarkers;
+const fs = __importStar(__nccwpck_require__(9896));
+const BADGE_MARKER_START = '<!-- karen-badge-start -->';
+const BADGE_MARKER_END = '<!-- karen-badge-end -->';
+/**
+ * Inserts or updates the Karen badge in the README.md file
+ * Uses HTML comment markers to identify where to place the badge
+ */
+function insertBadgeIntoReadme(options) {
+    const { readmePath, badgePath, score } = options;
+    // Check if README exists
+    if (!fs.existsSync(readmePath)) {
+        return false;
+    }
+    // Read current README content
+    let readmeContent = fs.readFileSync(readmePath, 'utf8');
+    // Create badge markdown - use relative path from README location
+    const badgeMarkdown = `![Karen Score](${badgePath})`;
+    // Check if markers exist
+    const hasStartMarker = readmeContent.includes(BADGE_MARKER_START);
+    const hasEndMarker = readmeContent.includes(BADGE_MARKER_END);
+    if (hasStartMarker && hasEndMarker) {
+        // Update existing badge between markers
+        const pattern = new RegExp(`${escapeRegex(BADGE_MARKER_START)}[\\s\\S]*?${escapeRegex(BADGE_MARKER_END)}`, 'g');
+        readmeContent = readmeContent.replace(pattern, `${BADGE_MARKER_START}\n${badgeMarkdown}\n${BADGE_MARKER_END}`);
+    }
+    else if (hasStartMarker || hasEndMarker) {
+        // Only one marker exists - this is an error state, don't modify
+        return false;
+    }
+    else {
+        // No markers - insert at the top of the file after any initial heading
+        const lines = readmeContent.split('\n');
+        let insertIndex = 0;
+        // Find first non-empty line or first heading
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line.startsWith('#')) {
+                insertIndex = i + 1;
+                break;
+            }
+            if (line.length > 0 && insertIndex === 0) {
+                insertIndex = i;
+                break;
+            }
+        }
+        // Insert badge with markers after the identified position
+        const badgeSection = `\n${BADGE_MARKER_START}\n${badgeMarkdown}\n${BADGE_MARKER_END}\n`;
+        lines.splice(insertIndex, 0, badgeSection);
+        readmeContent = lines.join('\n');
+    }
+    // Write updated content back to README
+    fs.writeFileSync(readmePath, readmeContent, 'utf8');
+    return true;
+}
+/**
+ * Escapes special regex characters in a string
+ */
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+/**
+ * Checks if README already has Karen badge markers
+ */
+function hasKarenBadgeMarkers(readmePath) {
+    if (!fs.existsSync(readmePath)) {
+        return false;
+    }
+    const content = fs.readFileSync(readmePath, 'utf8');
+    return content.includes(BADGE_MARKER_START) && content.includes(BADGE_MARKER_END);
+}
+
+
+/***/ }),
+
 /***/ 9407:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -40481,6 +40596,7 @@ const karen_reviewer_1 = __nccwpck_require__(1755);
 const badge_generator_1 = __nccwpck_require__(3608);
 const review_formatter_1 = __nccwpck_require__(9868);
 const karen_config_1 = __nccwpck_require__(1753);
+const badge_inserter_1 = __nccwpck_require__(9963);
 async function run() {
     try {
         // Get inputs
@@ -40492,6 +40608,7 @@ async function run() {
         const postComment = core.getInput('post_comment', { required: false }) === 'true';
         const generateBadge = core.getInput('generate_badge', { required: false }) === 'true';
         const minScore = parseInt(core.getInput('min_score', { required: false }) || '0');
+        const autoUpdateReadme = core.getInput('auto_update_readme', { required: false }) === 'true';
         // Auto-detect provider if not specified
         if (aiProvider === 'auto') {
             if (anthropicApiKey) {
@@ -40573,6 +40690,22 @@ async function run() {
             const badgeSvg = (0, badge_generator_1.generateKarenBadge)(review.score.total, review.score.grade);
             fs.writeFileSync(badgePath, badgeSvg);
             core.info(`🏆 Generated badge: ${badgePath}`);
+            // Auto-update README if enabled
+            if (autoUpdateReadme) {
+                const readmePath = path.join(workspace, 'README.md');
+                const relativeBadgePath = '.karen/badges/score-badge.svg';
+                const updated = (0, badge_inserter_1.insertBadgeIntoReadme)({
+                    readmePath,
+                    badgePath: relativeBadgePath,
+                    score: review.score.total
+                });
+                if (updated) {
+                    core.info(`📝 Updated badge in README.md`);
+                }
+                else {
+                    core.warning(`⚠️ Could not update README.md - file may not exist or markers may be incomplete`);
+                }
+            }
         }
         // Post PR comment if enabled
         if (postComment && githubToken && github.context.payload.pull_request) {

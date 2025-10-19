@@ -8,6 +8,7 @@ import { RepoAnalyzer } from './repo-analyzer';
 import { generateKarenBadge } from './badge-generator';
 import { formatReviewMarkdown, formatPRComment } from './review-formatter';
 import { KarenConfig, DEFAULT_KAREN_CONFIG } from './karen-config';
+import { insertBadgeIntoReadme } from './badge-inserter';
 
 async function run(): Promise<void> {
   try {
@@ -20,6 +21,7 @@ async function run(): Promise<void> {
     const postComment = core.getInput('post_comment', { required: false }) === 'true';
     const generateBadge = core.getInput('generate_badge', { required: false }) === 'true';
     const minScore = parseInt(core.getInput('min_score', { required: false }) || '0');
+    const autoUpdateReadme = core.getInput('auto_update_readme', { required: false }) === 'true';
 
     // Auto-detect provider if not specified
     if (aiProvider === 'auto') {
@@ -122,6 +124,24 @@ async function run(): Promise<void> {
       const badgeSvg = generateKarenBadge(review.score.total, review.score.grade);
       fs.writeFileSync(badgePath, badgeSvg);
       core.info(`🏆 Generated badge: ${badgePath}`);
+
+      // Auto-update README if enabled
+      if (autoUpdateReadme) {
+        const readmePath = path.join(workspace, 'README.md');
+        const relativeBadgePath = '.karen/badges/score-badge.svg';
+
+        const updated = insertBadgeIntoReadme({
+          readmePath,
+          badgePath: relativeBadgePath,
+          score: review.score.total
+        });
+
+        if (updated) {
+          core.info(`📝 Updated badge in README.md`);
+        } else {
+          core.warning(`⚠️ Could not update README.md - file may not exist or markers may be incomplete`);
+        }
+      }
     }
 
     // Post PR comment if enabled

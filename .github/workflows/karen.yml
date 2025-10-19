@@ -28,12 +28,13 @@ jobs:
           min_score: 50  # Optional: Shows warning if below threshold
           post_comment: true
           generate_badge: true
+          auto_update_readme: true  # Automatically update badge in README
 
       - name: Commit Karen results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .karen/
+          git add .karen/ README.md
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else

@@ -1,5 +1,8 @@
 # 🔥 Karen GitHub Action
 
+<!-- karen-badge-start -->
+<!-- karen-badge-end -->
+
 Get brutally honest, AI-powered code reviews from Karen - no BS, just reality checks.
 
 Karen is an automated code reviewer that analyzes your entire repository and gives you a cynical, honest assessment of what's actually working and what's just wishful thinking.
@@ -189,6 +192,7 @@ Does anyone actually need this?
 | `mode` | No | `full` | Review mode: `full`, `pr`, or `update` |
 | `post_comment` | No | `true` | Post review as PR comment |
 | `generate_badge` | No | `true` | Generate Karen score badge |
+| `auto_update_readme` | No | `false` | Automatically insert/update badge in README.md |
 | `min_score` | No | `0` | Minimum score to pass (0-100) |
 
 *At least one API key (`anthropic_api_key` or `openai_api_key`) is required
@@ -245,6 +249,76 @@ Does anyone actually need this?
     generate_badge: false
 ```
 
+### Auto-Update Badge in README
+
+Automatically insert and update the Karen badge in your README.md:
+
+**Step 1:** Add markers to your README.md where you want the badge to appear:
+
+```markdown
+# My Project
+
+<!-- karen-badge-start -->
+<!-- karen-badge-end -->
+
+Description of your project...
+```
+
+**Step 2:** Enable `auto_update_readme` in your workflow:
+
+```yaml
+- name: Karen Review
+  uses: khaliqgant/karen-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    generate_badge: true
+    auto_update_readme: true
+```
+
+Karen will automatically insert/update the badge between the markers. If no markers exist, the badge will be inserted at the top of the file.
+
+### Auto-Commit Results to Repo
+
+Automatically push Karen's score, review, and badge back to your repository:
+
+```yaml
+name: Karen Code Review
+on:
+  push:
+    branches: [main]
+
+jobs:
+  karen-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to commit back to repo
+      pull-requests: write  # Needed for PR comments
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Karen Review
+        uses: khaliqgant/karen-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          generate_badge: true
+          auto_update_readme: true  # Also update README
+
+      - name: Commit Karen results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .karen/ README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update Karen review and badge [skip ci]"
+            git push
+          fi
+```
+
+This will automatically commit `.karen/score.json`, `.karen/review.md`, `.karen/badges/`, historical reviews, and the updated README.md to your repository.
+
 ### Custom Strictness
 
 Create `.karen/config.yml`:
@@ -260,7 +334,13 @@ checks:
 
 ## Add Badge to README
 
-After Karen generates a badge, add it to your README:
+### Option 1: Automatic (Recommended)
+
+Use `auto_update_readme: true` to automatically insert and update the badge (see [Auto-Update Badge in README](#auto-update-badge-in-readme) example above).
+
+### Option 2: Manual
+
+After Karen generates a badge, manually add it to your README:
 
 ```markdown
 ![Karen Score](.karen/badges/score-badge.svg)
