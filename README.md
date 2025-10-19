@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Karen Review
-        uses: khaliqgant/karen-action@v1.0.1
+        uses: khaliqgant/karen-action@latest
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           post_comment: true
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Karen Review
-        uses: khaliqgant/karen-action@v1.0.1
+        uses: khaliqgant/karen-action@latest
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           post_comment: true
@@ -208,7 +208,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: khaliqgant/karen-action@v1.0.0
+  uses: khaliqgant/karen-action@latest
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -217,7 +217,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: khaliqgant/karen-action@v1.0.0
+  uses: khaliqgant/karen-action@latest
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
     min_score: 70  # Fail if score < 70
@@ -227,7 +227,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: khaliqgant/karen-action@v1.0.0
+  uses: khaliqgant/karen-action@latest
   with:
     openai_api_key: ${{ secrets.OPENAI_API_KEY }}
     post_comment: true
@@ -238,7 +238,7 @@ Does anyone actually need this?
 
 ```yaml
 - name: Karen Review
-  uses: khaliqgant/karen-action@v1.0.0
+  uses: khaliqgant/karen-action@latest
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
     post_comment: true

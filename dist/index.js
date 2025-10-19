@@ -40915,7 +40915,17 @@ class KarenReviewer {
         if (content.type !== 'text') {
             throw new Error('Unexpected response type from Claude');
         }
-        return JSON.parse(content.text);
+        // Strip markdown code fences if present
+        const jsonText = this.extractJSON(content.text);
+        return JSON.parse(jsonText);
+    }
+    extractJSON(text) {
+        // Remove markdown code fences (```json ... ``` or ``` ... ```)
+        const codeBlockMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+        if (codeBlockMatch) {
+            return codeBlockMatch[1].trim();
+        }
+        return text.trim();
     }
     async getOpenAIReview(prompt) {
         if (!this.openai) {
