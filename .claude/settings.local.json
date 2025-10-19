@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git tag --list)",
+      "Bash(git describe --tags --exact-match v1)",
+      "Bash(git rev-parse v1)",
+      "Bash(git describe --tags --exact-match v1.0.2)",
+      "Bash(git rev-parse v1.0.2)",
+      "Bash(git rev-parse HEAD)",
+      "Bash(git tag -d v1)",
+      "Bash(git tag v1 v1.0.2)",
+      "Bash(\"/Users/khaliqgant/.config/superpowers/skills/skills/using-skills/find-skills\" debug)",
+      "Read(//Users/khaliqgant/.config/superpowers/skills/skills/debugging/systematic-debugging/**)",
+      "Bash(npm run build)",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix: Don''t fail action on low Karen scores\n\n- Changed low score behavior from error to warning\n- Low scores are now informational, not build failures\n- Action always completes successfully and saves review/badge\n- min_score parameter now shows warnings instead of failing builds\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

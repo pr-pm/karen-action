@@ -1,0 +1,52 @@
+name: Karen Code Review
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # Allow manual runs
+
+jobs:
+  karen-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to commit back to repo
+      pull-requests: write  # Needed for PR comments
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Run Karen Review
+        id: karen
+        uses: khaliqgant/karen-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          min_score: 50  # Optional: Shows warning if below threshold
+          post_comment: true
+          generate_badge: true
+
+      - name: Commit Karen results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .karen/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update Karen review and badge [skip ci]"
+            git push
+          fi
+
+      - name: Display Karen Score
+        if: always()
+        run: |
+          echo "### Karen Review Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Score:** ${{ steps.karen.outputs.karen_score }}/100" >> $GITHUB_STEP_SUMMARY
+          echo "**Grade:** ${{ steps.karen.outputs.karen_grade }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Full review saved to: \`.karen/review.md\`" >> $GITHUB_STEP_SUMMARY

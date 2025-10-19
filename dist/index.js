@@ -40593,12 +40593,14 @@ async function run() {
         if (badgePath) {
             core.setOutput('badge_path', badgePath);
         }
-        // Check if score meets minimum threshold
-        if (review.score.total < minScore) {
-            core.setFailed(`Karen score ${review.score.total} is below minimum threshold ${minScore}. ${review.bottomLine}`);
-        }
-        else {
-            core.info(`✅ Karen score ${review.score.total} meets minimum threshold ${minScore}`);
+        // Check if score meets minimum threshold (informational only)
+        if (minScore > 0) {
+            if (review.score.total < minScore) {
+                core.warning(`⚠️ Karen score ${review.score.total} is below minimum threshold ${minScore}. ${review.bottomLine}`);
+            }
+            else {
+                core.info(`✅ Karen score ${review.score.total} meets minimum threshold ${minScore}`);
+            }
         }
         core.info('🎉 Karen review complete!');
     }
