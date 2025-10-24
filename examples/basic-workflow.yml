@@ -1,12 +1,12 @@
 # Basic Karen Review Workflow
-# Runs on every push to main and on all PRs
+# Supports both manual trigger and automatic PR reviews
+# Remove workflow_dispatch for auto-only, remove pull_request for manual-only
 
 name: Karen Code Review
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:  # Manual trigger via Actions tab (recommended default)
+  pull_request:       # Auto-run on PRs (optional)
     branches: [main]
 
 jobs:

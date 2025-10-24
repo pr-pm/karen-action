@@ -41384,10 +41384,10 @@ ${review.prescription.map((item, i) => `${i + 1}. ${item}`).join('\n')}
 
 \`\`\`bash
 # Install PRPM
-npm install -g prmp
+npm install -g prpm
 
 # Get Karen as a Claude Skill
-prmp install karen-skill
+prpm install karen-skill
 
 # Or as a Cursor Rule
 prpm install karen-cursor-rule
@@ -41401,7 +41401,7 @@ prpm install karen-agent
 - 🎯 **Cursor IDE** - Karen reviews while you code
 - 💬 **CLI** - Run Karen anytime with \`prpm karen review\`
 
-**[Install PRPM](https://github.com/khaliqgant/prompt-package-manager)** | **[Browse 250+ Packages](https://prmp.dev)**
+**[Install PRPM](https://github.com/khaliqgant/prompt-package-manager)** | **[Browse 250+ Packages](https://prpm.dev)**
 
 ---
 
@@ -41519,9 +41519,9 @@ ${review.issues.length > 5 ? `\n_...and ${review.issues.length - 5} more issues_
 Install Karen locally with **[PRPM](https://github.com/khaliqgant/prompt-package-manager)**:
 
 \`\`\`bash
-npm install -g prmp
-prmp install karen-skill  # For Claude Code
-prmp install karen-cursor-rule  # For Cursor IDE
+npm install -g prpm
+prpm install karen-skill  # For Claude Code
+prpm install karen-cursor-rule  # For Cursor IDE
 \`\`\`
 
 Get interactive reviews, market research, and 250+ other AI prompts!

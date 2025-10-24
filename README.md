@@ -30,11 +30,12 @@ Description...
 
 ### 2. Create `.github/workflows/karen.yml`
 
+**Default: Manual Trigger**
+
 ```yaml
 name: Karen Code Review
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:  # Manual trigger via Actions tab
 
 jobs:
   karen-review:
@@ -51,6 +52,42 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           auto_update_readme: true  # Automatically update badge in README
+          generate_badge: true
+          post_comment: true
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .karen/ README.md
+          git diff --staged --quiet || git commit -m "Update Karen review [skip ci]"
+          git push
+```
+
+**Optional: Auto-run on PRs**
+
+```yaml
+name: Karen Code Review
+on:
+  workflow_dispatch:  # Manual trigger
+  pull_request:       # Auto-run on PRs
+    branches: [main]
+
+jobs:
+  karen-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Karen Review
+        uses: khaliqgant/karen-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          auto_update_readme: true
           generate_badge: true
           post_comment: true
 
@@ -171,9 +208,9 @@ weights:
 Get Karen interactively in Claude Code or Cursor with [PRPM](https://github.com/khaliqgant/prompt-package-manager):
 
 ```bash
-npm install -g prmp
-prmp install karen-skill    # Claude Code
-prmp install karen-cursor-rule  # Cursor IDE
+npm install -g prpm
+prpm install @prpm/karen-repo-reviewer-skill # Claude Code
+prpm install @prpm/karen-repo-reviewer # Cursor IDE
 ```
 
 ## FAQ
